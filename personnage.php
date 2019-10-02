@@ -4,11 +4,17 @@ require __DIR__ . "/vendor/autoload.php";
 ## ETAPE 0
 
 ## CONNECTEZ VOUS A VOTRE BASE DE DONNEE
-
+try{
+    $pdo = new PDO('mysql:host=127.0.0.1;dbname=rendu_php', "root", "");
+} catch (Exception $e){
+    echo "erreur de connection à la base de donnée";
+}
 ## ETAPE 1
 
 ## RECUPERER TOUT LES PERSONNAGES CONTENU DANS LA TABLE personnages
-
+$showperso=$pdo->prepare('SELECT * FROM personnages');
+$showperso->execute();
+$show = $showperso->fetchAll(PDO::FETCH_ASSOC);
 ## ETAPE 2
 
 ## LES AFFICHERS DANS LE HTML

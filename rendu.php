@@ -5,6 +5,11 @@ require __DIR__ . "/vendor/autoload.php";
 
 ## CONNECTEZ VOUS A VOTRE BASE DE DONNEE
 
+try{
+    $pdo = new PDO('mysql:host=127.0.0.1;dbname=rendu_php', "root", "");
+} catch (Exception $e){
+    echo "erreur de connection à la base de donnée";
+}
 ### ETAPE 1
 
 ####CREE UNE BASE DE DONNEE AVEC UNE TABLE PERSONNAGE, UNE TABLE TYPE
@@ -37,7 +42,9 @@ require __DIR__ . "/vendor/autoload.php";
 ## ETAPE 3
 
 # AFFICHER DANS LE SELECTEUR (<select name="" id="">) tout les types qui sont disponible (cad tout les type contenu dans la table types)
-
+$stat_type=$pdo->prepare('SELECT * FROM types');
+$stat_type->execute();
+$types = $stat_type->fetchAll(PDO::FETCH_OBJ);
 
 #######################
 ## ETAPE 4
