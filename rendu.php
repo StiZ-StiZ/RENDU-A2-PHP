@@ -106,5 +106,18 @@ $types = $stat_type->fetchAll(PDO::FETCH_OBJ);
     </form>
 </div>
 
+<?php
+    if(isset($_POST['nom'],$_POST['atk'],$_POST['pv'],$_POST['type'])){
+        if(!empty($_POST['nom']) && !empty($_POST['atk']) && !empty($_POST['pv']) && !empty($_POST['type'])){
+            $name=$_POST['nom'];
+            $atk=$_POST['atk'];
+            $pv=$_POST['pv'];
+            $type=$_POST['type'];
+            $addperso= $pdo->prepare('INSERT INTO personnages(name,atk,pv,type_id) VALUES (:name, :atk, :pv, (SELECT ID FROM types WHERE name LIKE :type))');
+            $addperso->execute([":name" => $name, ":atk"=>$atk,":pv"=>$pv, ":type"=> $type]);
+            echo "PERSONNAGE ".$name." CREER";
+        }
+    }
+    ?>
 </body>
 </html>

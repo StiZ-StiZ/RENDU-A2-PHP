@@ -58,16 +58,74 @@ $show = $showperso->fetchAll(PDO::FETCH_OBJ);
 <h1>Combats</h1>
 <div class="w-100 mt-5">
 
-    <form action="">
+<form method="post">
         <div class="form-group">
-            <select name="" id=""></select>
+            <select name="Perso1" id="">
+                <option value="">Choissisez votre personnage</option>
+                <?php foreach ($show as $value) {
+                    if(($value->pv)>9){?>
+                        <option value="<?= $value->id ?>">
+                            <?= $value->name ?>
+                        </option><?php
+                    }?>
+
+<?php } ?>
+            </select>
         </div>
         <div class="form-group">
-            <select name="" id=""></select>
+            <select name="Perso2" id="">
+                <option value=""  >Choissisez votre personnage</option>
+                <?php foreach ($show as $value) {
+                    if (($value->pv) > 9) {
+                        ?>
+                        <option value="<?= $value->id ?>">
+                            <?= $value->name ?>
+                        </option>
+                    <?php }
+                }?>
+            </select>
         </div>
 
         <button class="btn">Fight</button>
     </form>
+
+    <?php
+    if (!empty($_POST)) {
+        $idPerso1 = $_POST['Perso1'];
+        $idPerso2 = $_POST['Perso2'];
+
+        $dbPerso1 = getPerso($idPerso1, $pdo);
+        $dbPerso2 = getPerso($idPerso2, $pdo);
+        
+        $pvPerso1 = $dbPerso1->pv - $dbPerso2->atk;
+        $pvPerso2 = $dbPerso2->pv - $dbPerso1->atk;
+
+        $newPerso1 = updatePvPerso($idPerso1, $pvPerso1, $pdo);
+        $newPerso2 = updatePvPerso($idPerso2, $pvPerso2, $pdo);
+
+
+        echo $newPerso1->name . " a perdu " . $newPerso2->atk . "PV <br> il lui reste " . $newPerso1->pv . " PV <br>";
+        echo $newPerso2->name . " a perdu " . $newPerso1->atk . "PV <br> il lui reste " . $newPerso2->pv . " PV <br>";
+    }
+
+    function updatePvPerso($id, $pv, $pdo)
+    {
+        $query = $pdo->prepare("UPDATE personnages SET pv = :newPv WHERE id = :id");
+        $query->execute(["newPv" => $pv, "id" => $id]);
+        $state = $query->fetch(PDO::FETCH_OBJ);
+
+        return getPerso($id, $pdo);
+    }
+
+    function getPerso($id, $pdo)
+    {
+        $query = $pdo->prepare("SELECT * FROM personnages WHERE id = :id");
+        $query->execute(['id' => $id]);
+
+        return $query->fetch(PDO::FETCH_OBJ);
+    }
+
+    ?>
 
 </div>
 

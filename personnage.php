@@ -56,6 +56,39 @@ $show = $showperso->fetchAll(PDO::FETCH_ASSOC);
 <div class="w-100 mt-5">
 
 </div>
+<?php if (!empty($show)){
+    foreach ($show as $perso){
+        if(isset($_POST["stars". $perso["id"]])){
+            $perso["stars"]++;
+            $addStars= $pdo->prepare('UPDATE personnages SET stars=:stars WHERE name=:name');
+            $jeveuxdesstars = $addStars->execute([":stars"=>$perso["stars"], ":name"=>$perso["name"]]);
+            echo $perso["name"]." a gagné 1 étoile <br>";
 
+        }
+        ?>
+
+        <tr>
+            <td>Nom : <?php echo $perso["name"]; ?></td><br>
+            <td>ATK : <?php echo $perso["atk"]; ?></td><br>
+            <td>PV : <?php echo $perso["pv"]; ?></td><br>
+            <td>Stars : <?php if($perso["stars"]==0){
+                        echo "il n'y a pas d'etoiles pour le moment";
+                }
+                else{
+                    echo $perso["stars"];
+                }?></td><br>
+            <form method="POST">
+                <button name="stars<?php echo $perso["id"] ?>">Stars</button>
+            </form>
+
+
+
+
+        </tr>
+        <br><br><br><?php
+    }
+
+
+} ?>
 </body>
 </html>
